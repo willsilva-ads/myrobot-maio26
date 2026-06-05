@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Robot - Relatório de Performance - Maio 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #03060f;
+            --bg-card: rgba(10, 15, 30, 0.55);
+            --bg-card-hover: rgba(16, 24, 48, 0.7);
+            --border-card: rgba(255, 255, 255, 0.05);
+            --accent: #7c3aed; /* Howli Purple Accent */
+            --accent-glow: rgba(124, 58, 237, 0.15);
+            --accent-rgb: 124, 58, 237;
+            --meta-color: #1877F2;
+            --whatsapp-color: #25D366;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --table-header: rgba(255, 255, 255, 0.02);
+            --table-row-hover: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* App Layout Grid */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            background-color: #050813;
+            border-right: 1px solid var(--border-card);
+            padding: 2.5rem 1.25rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-img {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #b39ddb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            outline: none;
+            padding: 0.25rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: grab;
+            border: 1px solid transparent;
+        }
+        
+        .nav-item:active {
+            cursor: grabbing;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.75rem 0.85rem;
+            width: 100%;
+            font-size: 0.925rem;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .nav-item.active a, .nav-item a:hover {
+            color: #fff;
+            background: rgba(124, 58, 237, 0.08);
+            border-left: 3px solid var(--accent);
+            padding-left: calc(0.85rem - 3px);
+        }
+
+        .nav-item.drag-over {
+            border: 1px dashed var(--accent);
+            background: rgba(124, 58, 237, 0.04);
+        }
+
+        .footer-branding {
+            border-top: 1px solid var(--border-card);
+            padding-top: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-branding strong {
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .fullscreen-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            color: #b39ddb;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            padding: 3rem;
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.05) 0%, transparent 60%);
+        }
+
+        /* Cover Section styling */
+        .cover-section {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .cover-content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .cover-left h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .cover-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            color: #b39ddb;
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .cover-right {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cover-art {
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(5,8,19,0.9) 0%, rgba(124, 58, 237,0.05) 100%);
+            border: 2px solid rgba(124, 58, 237, 0.2);
+            position: relative;
+            box-shadow: 0 0 50px rgba(124, 58, 237, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cover-art::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            border: 1px dashed rgba(124, 58, 237, 0.3);
+            animation: rotateClockwise 20s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes rotateClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Dashboard Header */
+        .dash-header {
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 1.5rem;
+        }
+
+        .dash-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #b39ddb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            outline: none;
+        }
+
+        .dash-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+            outline: none;
+        }
+
+        /* Section Layouts */
+        .section-block {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .section-block.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(124, 58, 237, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: var(--bg-card-hover);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            outline: none;
+        }
+
+        .card-title-icon {
+            width: 8px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* KPI Grids */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-grad, var(--accent));
+        }
+
+        .kpi-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-3px);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .kpi-label {
+            font-size: 0.725rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .kpi-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+            outline: none;
+        }
+
+        .kpi-subtext {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            outline: none;
+        }
+
+        /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .premium-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .premium-table th {
+            background: var(--table-header);
+            padding: 1rem;
+            font-weight: 600;
+            color: #fff;
+            border-bottom: 1px solid var(--border-card);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .premium-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .premium-table tbody tr:hover {
+            background: var(--table-row-hover);
+        }
+
+        .premium-table tr.total-row {
+            background: rgba(124, 58, 237, 0.06);
+            font-weight: 700;
+        }
+
+        .premium-table tr.total-row td {
+            border-top: 1px solid rgba(124, 58, 237, 0.3);
+            border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+            color: #fff;
+        }
+
+        /* Strategy blocks */
+        .strategy-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .strategy-block {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .strategy-block h4 {
+            font-family: 'Outfit', sans-serif;
+            color: #b39ddb;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .strategy-block p {
+            outline: none;
+            color: var(--text-muted);
+            font-size: 0.925rem;
+        }
+
+        .note-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* Final Presentation Section Styling */
+        .final-presentation-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 85vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .thank-you-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            outline: none;
+        }
+
+        .final-branding-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        /* Signature block layout */
+        .closing-footer-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .closing-divider {
+            width: 1px;
+            height: 50px;
+            background-color: rgba(255,255,255,0.15);
+        }
+
+        .footer-logo-mike {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #fff;
+            letter-spacing: 2px;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div>
+            <div class="logo-area">
+                <img src="logo-howli.png" class="logo-img" alt="Howli Logo">
+                <div class="logo-text" contenteditable="true">HOWLI</div>
+            </div>
+            
+            <nav>
+                <ul class="nav-list" id="sidebarNavList">
+                    <li class="nav-item active" data-target="cover" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#cover"><span contenteditable="true">Capa do Relatório</span></a></li>
+                    <li class="nav-item" data-target="objetivos" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#objetivos"><span contenteditable="true">Objetivo e Estratégia</span></a></li>
+                    <li class="nav-item" data-target="meta-leads-whatsapp" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#meta-leads-whatsapp"><span contenteditable="true">WhatsApp Leads</span></a></li>
+                    <li class="nav-item" data-target="meta-leads-lp" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#meta-leads-lp"><span contenteditable="true">LP Leads</span></a></li>
+                    <li class="nav-item" data-target="investimentos" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#investimentos"><span contenteditable="true">Investimento Total</span></a></li>
+                    <li class="nav-item" data-target="next-steps" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#next-steps"><span contenteditable="true">Próximos Passos</span></a></li>
+                    <li class="nav-item" data-target="finalizacao" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)"><a href="#finalizacao"><span contenteditable="true">Agradecimento</span></a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div>
+            <!-- Fullscreen presentation trigger button -->
+            <button class="fullscreen-btn" onclick="toggleFullScreen()">
+                <span>📺 Tela Cheia</span>
+            </button>
+            
+            <div class="footer-branding">
+                <strong contenteditable="true">Maio 2026</strong>
+                <span contenteditable="true">Performance Dashboard</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- COVER SECTION -->
+        <section id="cover" class="section-block active">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div class="cover-badge" contenteditable="true">🏆 Dashboard de Performance</div>
+            </div>
+            
+            <div class="cover-content" style="margin-top: 4rem;">
+                <div class="cover-left">
+                    <h1 contenteditable="true">Relatório de Tráfego Pago</h1>
+                    <p style="font-size: 2.2rem; color: #fff; margin-bottom: 0.75rem; font-family: 'Outfit'; font-weight: 700;" contenteditable="true">MY ROBOT</p>
+                    <p style="font-size: 1.15rem; color: var(--text-muted); font-weight: 300; margin-bottom: 4rem;" contenteditable="true">Análise estratégica de tráfego pago, conversão e captação de leads via WhatsApp e Landing Page no período de Maio de 2026.</p>
+                    
+                    <!-- Cover Signature Block -->
+                    <div class="closing-footer-layout" style="justify-content: flex-start; margin-top: 2rem;">
+                        <img src="logo-howli.png" style="height: 35px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(124, 58, 237, 0.3));" alt="Howli Logo">
+                        <div class="footer-logo-mike" style="margin-left: -0.5rem;" contenteditable="true">HOWLI</div>
+                        <div class="closing-divider"></div>
+                        <div style="text-align: left; font-size: 0.8rem; color: var(--text-muted);">
+                            <strong style="color: #fff; display: block; margin-bottom: 0.25rem;" contenteditable="true">MY ROBOT</strong>
+                            <span contenteditable="true">Gestão de Mídia & Analytics | Maio 2026</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cover-right">
+                    <div class="cover-art" style="display: flex; justify-content: center; align-items: center;">
+                        <img src="logo-howli.png" style="width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(124, 58, 237, 0.4));" alt="Howli Logo">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OBJECTIVE AND STRATEGY SECTION -->
+        <section id="objetivos" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Objetivo e Estratégia</h2>
+                    <p contenteditable="true">Direcionamento das campanhas de tráfego pago em Maio de 2026</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="strategy-container" style="grid-template-columns: 1fr; gap: 2.5rem;">
+                    <div class="strategy-block" style="border-left: 4px solid var(--accent); background: rgba(124, 58, 237, 0.02);">
+                        <h4 contenteditable="true">Objetivo</h4>
+                        <p style="font-size: 1.1rem; line-height: 1.7;" contenteditable="true">
+                            Gerar mensagens trazendo leads qualificados seguifas plataformas de Instagram, WhatsApp e Landing Page.
+                        </p>
+                    </div>
+                    <div class="strategy-block" style="border-left: 4px solid var(--meta-color); background: rgba(24, 119, 242, 0.02);">
+                        <h4 contenteditable="true">Estratégia</h4>
+                        <p style="font-size: 1.1rem; line-height: 1.7;" contenteditable="true">
+                            Utilizamos campanhas de geração de leads e captação de seguidores.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- META LEADS WHATSAPP SECTION -->
+        <section id="meta-leads-whatsapp" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Meta Ads - Leads WhatsApp</h2>
+                    <p contenteditable="true">Campanha de captação de leads qualificados direcionando para atendimento direto via WhatsApp</p>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card" style="--accent: var(--whatsapp-color)">
+                    <div class="kpi-label" contenteditable="true">Impressões</div>
+                    <div class="kpi-value" contenteditable="true">86.919</div>
+                    <div class="kpi-subtext" contenteditable="true">Exibições totais dos anúncios</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--whatsapp-color)">
+                    <div class="kpi-label" contenteditable="true">Pessoas Alcançadas</div>
+                    <div class="kpi-value" contenteditable="true">34.535</div>
+                    <div class="kpi-subtext" contenteditable="true">Usuários únicos impactados</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--whatsapp-color)">
+                    <div class="kpi-label" contenteditable="true">Leads WhatsApp</div>
+                    <div class="kpi-value" contenteditable="true">84</div>
+                    <div class="kpi-subtext" contenteditable="true">Conversas iniciadas no WhatsApp</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--whatsapp-color)">
+                    <div class="kpi-label" contenteditable="true">Custo por Lead</div>
+                    <div class="kpi-value" contenteditable="true">R$ 12,99</div>
+                    <div class="kpi-subtext" contenteditable="true">Investimento médio por lead gerado</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--whatsapp-color)">
+                    <div class="kpi-label" contenteditable="true">Investimento</div>
+                    <div class="kpi-value" contenteditable="true">R$ 1.090,87</div>
+                    <div class="kpi-subtext" contenteditable="true">Orçamento total investido</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: var(--whatsapp-color)"></div>
+                        Mapeamento do Funil - Leads WhatsApp
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th contenteditable="true">Métrica Operacional</th>
+                                <th contenteditable="true">Resultado Absoluto</th>
+                                <th contenteditable="true">Taxa de Conversão / Frequência</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td contenteditable="true">Alcance Único</td>
+                                <td contenteditable="true">34.535</td>
+                                <td contenteditable="true">Frequência média de 2,52x por usuário (86.919 Impressões)</td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">Conversas Iniciadas (Leads)</td>
+                                <td contenteditable="true">84</td>
+                                <td contenteditable="true">0,24% de taxa de conversão (Alcance -> Lead)</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td contenteditable="true">Investimento Total da Campanha</td>
+                                <td contenteditable="true">R$ 1.090,87</td>
+                                <td contenteditable="true">Custo médio por lead: R$ 12,99</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- META LEADS LP SECTION -->
+        <section id="meta-leads-lp" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Meta Ads - Leads Landing Page</h2>
+                    <p contenteditable="true">Campanha de captação de leads qualificados direcionando para cadastro na Landing Page (LP)</p>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Impressões</div>
+                    <div class="kpi-value" contenteditable="true">29.652</div>
+                    <div class="kpi-subtext" contenteditable="true">Exibições totais dos anúncios</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Pessoas Alcançadas</div>
+                    <div class="kpi-value" contenteditable="true">13.541</div>
+                    <div class="kpi-subtext" contenteditable="true">Usuários únicos impactados</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Leads Landing Page</div>
+                    <div class="kpi-value" contenteditable="true">21</div>
+                    <div class="kpi-subtext" contenteditable="true">Cadastros concluídos no site</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Custo por Lead</div>
+                    <div class="kpi-value" contenteditable="true">R$ 21,95</div>
+                    <div class="kpi-subtext" contenteditable="true">Investimento médio por lead gerado</div>
+                </div>
+                <div class="kpi-card" style="--accent: var(--meta-color)">
+                    <div class="kpi-label" contenteditable="true">Investimento</div>
+                    <div class="kpi-value" contenteditable="true">R$ 460,98</div>
+                    <div class="kpi-subtext" contenteditable="true">Orçamento total investido</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: var(--meta-color)"></div>
+                        Mapeamento do Funil - Leads Landing Page
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th contenteditable="true">Métrica Operacional</th>
+                                <th contenteditable="true">Resultado Absoluto</th>
+                                <th contenteditable="true">Taxa de Conversão / Frequência</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td contenteditable="true">Alcance Único</td>
+                                <td contenteditable="true">13.541</td>
+                                <td contenteditable="true">Frequência média de 2,19x por usuário (29.652 Impressões)</td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">Cadastros Concluídos (Leads)</td>
+                                <td contenteditable="true">21</td>
+                                <td contenteditable="true">0,15% de taxa de conversão (Alcance -> Lead)</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td contenteditable="true">Investimento Total da Campanha</td>
+                                <td contenteditable="true">R$ 460,98</td>
+                                <td contenteditable="true">Custo médio por lead: R$ 21,95</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- INVESTMENT SUMMARY SECTION -->
+        <section id="investimentos" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Investimento Total Consolidado</h2>
+                    <p contenteditable="true">Resumo financeiro e operacional consolidado das campanhas de tráfego de Maio 2026</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" contenteditable="true">
+                        <div class="card-title-icon" style="background: var(--accent)"></div>
+                        Distribuição do Orçamento Consolidado
+                    </div>
+                </div>
+                
+                <div class="kpi-grid">
+                    <div class="kpi-card" style="--accent: var(--whatsapp-color)">
+                        <div class="kpi-label" contenteditable="true">Meta Leads (WhatsApp)</div>
+                        <div class="kpi-value" contenteditable="true">R$ 1.090,87</div>
+                        <div class="kpi-subtext" contenteditable="true">Geração direta de mensagens</div>
+                    </div>
+                    <div class="kpi-card" style="--accent: var(--meta-color)">
+                        <div class="kpi-label" contenteditable="true">Meta Leads (Landing Page)</div>
+                        <div class="kpi-value" contenteditable="true">R$ 460,98</div>
+                        <div class="kpi-subtext" contenteditable="true">Geração de cadastros na LP</div>
+                    </div>
+                    <div class="kpi-card" style="--accent: var(--accent)">
+                        <div class="kpi-label" contenteditable="true">Investimento Consolidado</div>
+                        <div class="kpi-value" contenteditable="true">R$ 1.551,85</div>
+                        <div class="kpi-subtext" contenteditable="true">Investimento total no mês de Maio</div>
+                    </div>
+                </div>
+
+                <div class="table-container" style="margin-top: 2rem;">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th contenteditable="true">Campanha / Canal</th>
+                                <th contenteditable="true">Impressões</th>
+                                <th contenteditable="true">Alcance Único</th>
+                                <th contenteditable="true">Leads Gerados</th>
+                                <th contenteditable="true">Custo por Lead</th>
+                                <th contenteditable="true">Investimento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td contenteditable="true">Resultado Lead -> WhatsApp</td>
+                                <td contenteditable="true">86.919</td>
+                                <td contenteditable="true">34.535</td>
+                                <td contenteditable="true">84</td>
+                                <td contenteditable="true">R$ 12,99</td>
+                                <td contenteditable="true">R$ 1.090,87</td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">Resultado Lead -> LP</td>
+                                <td contenteditable="true">29.652</td>
+                                <td contenteditable="true">13.541</td>
+                                <td contenteditable="true">21</td>
+                                <td contenteditable="true">R$ 21,95</td>
+                                <td contenteditable="true">R$ 460,98</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td contenteditable="true">Consolidado Meta Ads</td>
+                                <td contenteditable="true">116.571</td>
+                                <td contenteditable="true">48.076</td>
+                                <td contenteditable="true">105</td>
+                                <td contenteditable="true">R$ 14,78</td>
+                                <td contenteditable="true">R$ 1.551,85</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRATEGIC ANALYSIS / NEXT STEPS SECTION -->
+        <section id="next-steps" class="section-block">
+            <div class="dash-header">
+                <div>
+                    <h2 contenteditable="true">Análise Estratégica & Próximos Passos</h2>
+                    <p contenteditable="true">Próximas ações e direcionamentos sugeridos com base nos resultados obtidos</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 0.75rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;" contenteditable="true">
+                        <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--accent);"></span>
+                        Direcionamento Geral
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;" contenteditable="true">
+                        Na campanha de WhatsApp geramos no mês de Maio total 84 mensagens custando R$ 12,99 por lead. Na campanha de LP geramos o total de 21 no site custando R$ 21,95 por lead. No mês de Junho continuaremos a campanhas para o WhatsApp e LP.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- THANK YOU SECTION -->
+        <section id="finalizacao" class="section-block">
+            <div class="final-presentation-block">
+                <h2 class="thank-you-title" contenteditable="true">Muito obrigado pela parceria!</h2>
+                
+                <div class="final-branding-card" style="background: transparent; border: none; padding: 0;">
+                    <!-- Closing Signature Block -->
+                    <div class="closing-footer-layout">
+                        <img src="logo-howli.png" style="height: 35px; object-fit: contain; filter: drop-shadow(0 0 5px rgba(124, 58, 237, 0.3));" alt="Howli Logo">
+                        <div class="footer-logo-mike" style="margin-left: -0.5rem;" contenteditable="true">HOWLI</div>
+                        <div class="closing-divider"></div>
+                        <div style="text-align: left; font-size: 0.8rem; color: var(--text-muted);">
+                            <strong style="color: #fff; display: block; margin-bottom: 0.25rem;" contenteditable="true">MY ROBOT</strong>
+                            <span contenteditable="true">Gestão de Mídia & Analytics | Maio 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // Fullscreen presentation API trigger
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                alert(`Erro ao tentar ativar tela cheia: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    // Navigation routing logic
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.hasAttribute('contenteditable') || e.target.closest('[contenteditable="true"]')) return;
+            
+            e.preventDefault();
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            this.classList.add('active');
+            
+            const target = this.getAttribute('data-target');
+            document.querySelectorAll('.section-block').forEach(section => {
+                section.classList.remove('active');
+                if (section.id === target) {
+                    section.classList.add('active');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+    // Drag and Drop ordering for navigation links
+    let dragSourceEl = null;
+
+    function handleDragStart(e) {
+        dragSourceEl = e.currentTarget;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        e.dataTransfer.setData('text/plain', e.currentTarget.getAttribute('data-target'));
+        e.currentTarget.style.opacity = '0.4';
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.currentTarget.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        
+        if (dragSourceEl !== e.currentTarget) {
+            const sourceHTML = dragSourceEl.innerHTML;
+            const sourceTarget = dragSourceEl.getAttribute('data-target');
+            
+            dragSourceEl.innerHTML = e.currentTarget.innerHTML;
+            dragSourceEl.setAttribute('data-target', e.currentTarget.getAttribute('data-target'));
+            
+            e.currentTarget.innerHTML = sourceHTML;
+            e.currentTarget.setAttribute('data-target', sourceTarget);
+            
+            const wasActive = e.currentTarget.classList.contains('active');
+            const sourceActive = dragSourceEl.classList.contains('active');
+            
+            if (wasActive) {
+                e.currentTarget.classList.remove('active');
+                dragSourceEl.classList.add('active');
+            } else if (sourceActive) {
+                dragSourceEl.classList.remove('active');
+                e.currentTarget.classList.add('active');
+            }
+        }
+        e.currentTarget.classList.remove('drag-over');
+        return false;
+    }
+
+    // Drag and Drop dragend event
+    function handleDragEnd(e) {
+        e.currentTarget.style.opacity = '1';
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('drag-over');
+        });
+    }
+</script>
+
+</body>
+</html>
