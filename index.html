@@ -305,6 +305,8 @@
             margin-bottom: 2rem;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            width: 100%;
+            max-width: 100%;
         }
 
         .glass-card:hover {
@@ -421,6 +423,7 @@
 
         .table-container {
             width: 100%;
+            max-width: 100%; /* Garante que o scroll lateral fique contido na tabela */
             overflow-x: auto;
             margin-top: 0.5rem;
             -webkit-overflow-scrolling: touch;
@@ -544,6 +547,8 @@
         @media (max-width: 992px) {
             .app-container {
                 grid-template-columns: 1fr;
+                width: 100%;
+                overflow-x: hidden; /* Evita que o layout do app role horizontalmente */
             }
 
             /* Ocultar barra lateral desktop no mobile */
@@ -559,11 +564,13 @@
             .main-content {
                 /* Aumento do espaçamento superior para compensar o menu fixado de 2 linhas */
                 padding: 12rem 1.5rem 3rem 1.5rem; 
+                width: 100%;
+                overflow-x: hidden;
             }
 
             .mobile-nav-grid {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr); /* 2 colunas padrão */
+                grid-template-columns: repeat(2, 1fr);
                 gap: 0.4rem;
             }
 
@@ -627,7 +634,7 @@
             }
 
             .kpi-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* 2 a 3 cards por linha no mobile */
+                grid-template-columns: repeat(2, 1fr) !important;
                 gap: 1rem;
             }
 
@@ -646,11 +653,11 @@
 
         @media (max-width: 480px) {
             .mobile-nav-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* Mantém estritamente 2 por linha em celulares pequenos */
+                grid-template-columns: repeat(2, 1fr) !important;
             }
 
             .kpi-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* Mantém 2 colunas mesmo em telas pequenas */
+                grid-template-columns: repeat(2, 1fr) !important;
                 gap: 0.75rem;
             }
 
@@ -673,7 +680,7 @@
                 grid-template-columns: repeat(3, 1fr) !important;
             }
             .main-content {
-                padding-top: 10rem; /* Ajusta espaçamento se for 3 colunas (tabela menor altura) */
+                padding-top: 10rem;
             }
         }
     </style>
