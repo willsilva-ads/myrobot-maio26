@@ -566,6 +566,37 @@
                 transform: translateX(0);
             }
 
+            .nav-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important; /* Exibir em grade 2 por linha */
+                gap: 0.5rem !important;
+                padding: 1rem 0 !important;
+                width: 100%;
+            }
+
+            .nav-item {
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid var(--border-card);
+                border-radius: 8px;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .nav-item a {
+                font-size: 0.9rem !important;
+                padding: 0.6rem 0.4rem !important;
+                justify-content: center;
+                text-align: center;
+                gap: 0.4rem;
+            }
+
+            .nav-item.active a, .nav-item a:hover {
+                border-left: none !important;
+                border-bottom: 2px solid var(--accent);
+                padding-left: 0.4rem !important;
+                padding-bottom: calc(0.6rem - 2px) !important;
+            }
+
             .mobile-header {
                 display: flex;
             }
@@ -594,6 +625,10 @@
         }
 
         @media (max-width: 768px) {
+            .nav-list {
+                grid-template-columns: repeat(2, 1fr) !important; /* Fixado em 2 por linha em telas médias */
+            }
+
             .kpi-grid {
                 grid-template-columns: repeat(2, 1fr) !important; /* 2 a 3 cards por linha no mobile */
                 gap: 1rem;
@@ -613,6 +648,10 @@
         }
 
         @media (max-width: 480px) {
+            .nav-list {
+                grid-template-columns: repeat(2, 1fr) !important; /* Mantém estritamente 2 por linha em celulares pequenos */
+            }
+
             .kpi-grid {
                 grid-template-columns: repeat(2, 1fr) !important; /* Mantém 2 colunas mesmo em telas pequenas */
                 gap: 0.75rem;
@@ -628,6 +667,13 @@
 
             .kpi-label {
                 font-size: 0.7rem;
+            }
+        }
+
+        /* Ajuste fino para telas menores ainda, caso precise de 3 em tablets */
+        @media (min-width: 600px) and (max-width: 992px) {
+            .nav-list {
+                grid-template-columns: repeat(3, 1fr) !important; /* 3 por linha em telas um pouco maiores/tablets */
             }
         }
     </style>
