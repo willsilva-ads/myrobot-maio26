@@ -151,33 +151,27 @@
             background-image: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.05) 0%, transparent 60%);
         }
 
-        /* Mobile Header */
-        .mobile-header {
+        /* Mobile Header & Nav Container (Fixo no topo do mobile) */
+        .mobile-fixed-topbar {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 70px;
             background-color: #050813;
             border-bottom: 1px solid var(--border-card);
             z-index: 1000;
+            flex-direction: column;
+            padding: 0.75rem 1.25rem;
+            gap: 0.75rem;
             align-items: center;
-            justify-content: center; /* Centralizado sem botão hambúrguer */
-            padding: 0 1.5rem;
         }
 
-        /* Mobile Navigation Grid Container */
-        .mobile-nav-grid-container {
-            display: none;
-            margin-bottom: 2.5rem;
-            width: 100%;
-        }
-
+        /* Mobile Navigation Grid */
         .mobile-nav-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
+            gap: 0.4rem;
             list-style: none;
             width: 100%;
         }
@@ -557,23 +551,20 @@
                 display: none !important;
             }
 
-            .mobile-header {
+            /* Exibir barra superior com logo e menu fixados juntos */
+            .mobile-fixed-topbar {
                 display: flex;
             }
 
             .main-content {
-                padding: 6rem 1.5rem 3rem 1.5rem; /* Margem superior para o header fixo */
-            }
-
-            /* Menu de Botões Visível Diretamente na Tela (Fora de drawers/hambúrgueres) */
-            .mobile-nav-grid-container {
-                display: block;
+                /* Aumento do espaçamento superior para compensar o menu fixado de 2 linhas */
+                padding: 12rem 1.5rem 3rem 1.5rem; 
             }
 
             .mobile-nav-grid {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr); /* 2 a 3 botões por linha */
-                gap: 0.5rem;
+                grid-template-columns: repeat(2, 1fr); /* 2 colunas padrão */
+                gap: 0.4rem;
             }
 
             .mobile-nav-grid .nav-item {
@@ -589,7 +580,7 @@
 
             .mobile-nav-grid .nav-item a {
                 font-size: 0.85rem;
-                padding: 0.6rem 0.4rem;
+                padding: 0.5rem 0.3rem;
                 justify-content: center;
                 text-align: center;
                 width: 100%;
@@ -650,7 +641,7 @@
 
         @media (max-width: 480px) {
             .mobile-nav-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* Mantém 2 por linha em celulares pequenos */
+                grid-template-columns: repeat(2, 1fr) !important; /* Mantém estritamente 2 por linha em celulares pequenos */
             }
 
             .kpi-grid {
@@ -676,15 +667,27 @@
             .mobile-nav-grid {
                 grid-template-columns: repeat(3, 1fr) !important;
             }
+            .main-content {
+                padding-top: 10rem; /* Ajusta espaçamento se for 3 colunas (tabela menor altura) */
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- Header Fixo no Mobile (Logo Centralizado, Sem hambúrguer) -->
-<header class="mobile-header">
-    <img src="logo-howli.png" class="logo-img" alt="Howli Logo" style="height: 45px;">
-</header>
+<!-- Header e Menu de Navegação Fixados juntos no Mobile (Sem Hambúrguer) -->
+<div class="mobile-fixed-topbar">
+    <img src="logo-howli.png" class="logo-img" alt="Howli Logo" style="height: 40px; margin-bottom: 0.25rem;">
+    <ul class="mobile-nav-grid">
+        <li class="nav-item active" data-target="cover"><a href="#cover">Capa</a></li>
+        <li class="nav-item" data-target="objetivos"><a href="#objetivos">Objetivo</a></li>
+        <li class="nav-item" data-target="meta-leads-whatsapp"><a href="#meta-leads-whatsapp">WhatsApp</a></li>
+        <li class="nav-item" data-target="meta-leads-lp"><a href="#meta-leads-lp">LP Leads</a></li>
+        <li class="nav-item" data-target="investimentos"><a href="#investimentos">Investimento</a></li>
+        <li class="nav-item" data-target="next-steps"><a href="#next-steps">Próximos</a></li>
+        <li class="nav-item" data-target="finalizacao"><a href="#finalizacao">Parceria</a></li>
+    </ul>
+</div>
 
 <div class="app-container">
     <!-- Sidebar Navigation (Desktop - Fica oculto no mobile) -->
@@ -723,18 +726,6 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-        <!-- Mobile Navigation Grid (Exibido diretamente na tela no mobile, oculto no desktop) -->
-        <nav class="mobile-nav-grid-container">
-            <ul class="mobile-nav-grid">
-                <li class="nav-item active" data-target="cover"><a href="#cover">Capa</a></li>
-                <li class="nav-item" data-target="objetivos"><a href="#objetivos">Objetivo</a></li>
-                <li class="nav-item" data-target="meta-leads-whatsapp"><a href="#meta-leads-whatsapp">WhatsApp Leads</a></li>
-                <li class="nav-item" data-target="meta-leads-lp"><a href="#meta-leads-lp">LP Leads</a></li>
-                <li class="nav-item" data-target="investimentos"><a href="#investimentos">Investimento</a></li>
-                <li class="nav-item" data-target="next-steps"><a href="#next-steps">Próximos Passos</a></li>
-                <li class="nav-item" data-target="finalizacao"><a href="#finalizacao">Agradecer</a></li>
-            </ul>
-        </nav>
 
         <!-- COVER SECTION -->
         <section id="cover" class="section-block active">
@@ -1106,7 +1097,19 @@
                     section.classList.add('active');
                 }
             });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Rola até o topo da tela levando em consideração o menu fixado de 2 linhas no mobile
+            const offset = window.innerWidth <= 992 ? 150 : 0;
+            const element = document.getElementById(target);
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = element.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
         });
     });
 </script>
